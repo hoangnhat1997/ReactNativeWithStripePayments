@@ -21,15 +21,47 @@ const PaymentScreen = () => {
     console.log(response);
     if (response.error) {
       Alert.alert('Something went wrong');
+      return;
+    }
+    const initResponse = await initPaymentSheet({
+      merchantDisplayName: 'Nhat Pham',
+      paymentIntentClientSecret: response.data.paymentIntent,
+    });
+    if (initResponse.error) {
+      console.log(initResponse.error);
+      Alert.alert('Something went wrong');
+      return;
+    }
+
+    const paymentResponse = await presentPaymentSheet();
+
+    if (paymentResponse.error) {
+      Alert.alert(
+        `Error code: ${paymentResponse.error.code}`,
+        paymentResponse.error.message,
+      );
+      return;
     }
   };
+
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Nhat</Text>
       <TouchableOpacity
-        style={{backgroundColor: 'red', padding: 20}}
+        style={{
+          padding: 20,
+          paddingHorizontal: 20,
+          position: 'absolute',
+          backgroundColor: 'black',
+          bottom: 30,
+          width: '90%',
+          alignSelf: 'center',
+          borderRadius: 100,
+          alignItems: 'center',
+        }}
         onPress={() => onCheckout()}>
-        <Text>Click</Text>
+        <Text style={{color: 'white', fontWeight: '500', fontSize: 16}}>
+          Check out
+        </Text>
       </TouchableOpacity>
     </View>
   );
